@@ -1,0 +1,408 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+
+/* Reset */
+*,*::before,*::after{box-sizing:border-box}ul[class],ol[class]{padding:0}body,h1,h2,h3,h4,h5,p,ul[class],ol[class],figure,blockquote,dl,dd{margin:0}html{scroll-behavior:smooth}body{min-height:100vh;text-rendering:optimizeSpeed;line-height:1.5}ul[class],ol[class]{list-style:none}a:not([class]){text-decoration-skip-ink:auto}img{max-width:100%;display:block}article>*+*{margin-top:1em}input,button,textarea,select{font:inherit}@media (prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}
+
+/* Variables */
+:root {
+  /* Sizes */
+  --radius: 12px;
+  --btn-size: 3rem;
+  --btn-round-size: 2.8rem;
+
+  /* Font */
+  --text-color-light: #000;
+  --text-alt-color-light: #777;
+  --text-color-dark: #fff;
+  --text-alt-color-dark: #777;
+
+  /* Background */
+  --bg-color-light: hsl(213, 7%, 70%);
+  --bg-alt-color-light: hsl(213, 7%, 90%);
+  --bg-alt2-color-light: hsl(213, 7%, 78%);
+
+  --bg-color-dark: hsl(213, 20%, 15%);
+  --bg-alt-color-dark: hsl(213, 20%, 10%);
+  --bg-alt2-color-dark: hsl(213, 20%, 25%);
+
+  /* Buttons */
+  --btn-color-fill-light: hsl(213, 10%, 10%);
+  --btn-color-fill-dark: hsl(213, 10%, 80%);
+  --btn-color-highlight: hsl(213, 55%, 30%);
+  --btn-color-highlight-hover: hsl(213, 55%, 40%);
+  
+  /* Theme */
+  --bg-color-1: var(--bg-color-light);
+  --bg-color-2: var(--bg-alt-color-light);
+  --bg-color-3: var(--bg-alt2-color-light);
+
+  --btn-color-fill: var(--btn-color-fill-light);
+}
+
+/* Dark theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color-1: var(--bg-alt-color-dark);
+    --bg-color-2: var(--bg-color-dark);
+    --bg-color-3: var(--bg-alt2-color-dark);
+
+    --btn-color-fill: var(--btn-color-fill-dark);
+  }
+}
+
+/* Style */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+  user-select: none;
+  background: var(--bg-color-1);
+  display: grid;
+}
+
+#app {
+  height: 100vh;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: [player] 1fr [clips] 340px;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* App sections */
+section {
+  height: 100vh;
+  display: grid;
+  position: relative;
+}
+
+.player-section {
+  grid-area: player;
+}
+
+.clips-section {
+  grid-area: clips;
+  background: var(--bg-color-2);
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.clips-els {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 2rem;
+}
+
+.ivs-player {
+  width: 100%;
+  height: 100%;
+}
+
+/* Player overlay */
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.overlay .icon {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  font-size: 36px;
+  animation: scale 0.2s ease-in-out;
+  transition: all 0.15s ease-in-out;
+  filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.2));
+}
+
+.overlay .icon.fade {
+  opacity: 0;
+}
+
+#player-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  transition: background 0.1s ease-in-out;
+}
+
+.player-controls__inner {
+  height: var(--btn-size);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 0 10px 10px 10px;
+}
+
+.player--hover #player-controls {
+  background: linear-gradient(0deg,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0) 20%,
+      rgba(0, 0, 0, 0) 100%);
+}
+
+.player--hover .btn {
+  display: flex;
+}
+
+.player--hover #settings-menu.open {
+  display: block;
+}
+
+.btn {
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  -webkit-appearance: none;
+  background: transparent;
+  position: absolute;
+  bottom: 10px;
+  padding: 0;
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  display: none;
+  border-radius: 2px;
+}
+
+.btn--icon {
+  width: var(--btn-size);
+  height: var(--btn-size);
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--btn-size);
+}
+
+.btn:focus {
+  border: 2px solid #fff;
+}
+
+.btn--clip {
+  background: var(--btn-color-highlight);
+  transition: all .15s ease-in-out;
+}
+
+.btn--clip:hover,
+.btn--clip:focus,
+.btn--clip:active {
+  background: var(--btn-color-highlight-hover);
+}
+
+.btn--clip:active {
+  transform: translate3d(0, 2px, 0);
+}
+
+.btn-tooltip {
+  position: absolute;
+  bottom: calc(100% + 1rem);
+  display: block;
+  text-align: center;
+  background: var(--btn-color-highlight-hover);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  color: #FFF;
+  font-weight: 500;
+  font-size: .85rem;
+  transition: all .15s ease-in-out;
+}
+
+.btn-tooltip:after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 6px 5px 0 5px;
+  border-color: var(--btn-color-highlight-hover) transparent transparent transparent;
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  margin-left: -5px;
+}
+
+.btn--clip:hover .btn-tooltip,
+.btn--clip:focus .btn-tooltip {
+  bottom: calc(100% + 1.3rem);
+}
+
+.icon {
+  fill: #fff;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#play {
+  left: 15px;
+}
+
+#mute {
+  left: calc(25px + var(--btn-size));
+}
+
+#clip {
+  right: calc(25px + var(--btn-size));
+}
+
+#settings {
+  right: 15px;
+}
+
+.icon--settings {
+  transition: transform 0.15s ease-in-out;
+}
+
+.btn--pause .icon--pause {
+  display: none;
+}
+
+.btn--play .icon--play {
+  display: none;
+}
+
+.btn--mute .icon--volume_off {
+  display: none;
+}
+
+.btn--unmute .icon--volume_up {
+  display: none;
+}
+
+.btn--settings-on .icon--settings {
+  transform: rotate(45deg);
+}
+
+#settings-menu {
+  width: 180px;
+  height: auto;
+  padding: 20px 0;
+  position: absolute;
+  right: 10px;
+  bottom: 55px;
+  background: #000;
+  z-index: 2;
+  display: none;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.settings-menu-item {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 20px;
+  display: block;
+  cursor: pointer;
+}
+
+.settings-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+/* Clips */
+.clip-el {
+  transition: all 0.35s ease-in-out;
+  animation: fadeIn 0.5s 1;
+  border-radius: var(--radius);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0.2;
+    background: var(--btn-color-highlight-hover);
+  }
+  100% {
+    opacity: 1;
+    background: transparent;
+  }
+}
+
+.clip-el__player {
+  width: 100%;
+  background: #000;
+  border-radius: var(--radius);
+}
+
+.clip-el__btns {
+  margin: 0.2rem 0 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-round {
+  width: var(--btn-round-size);
+  height: var(--btn-round-size);
+  border-radius: var(--btn-round-size);
+  background: var(--bg-color-3);
+  border: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+  border: 3px solid var(--bg-color-3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-round:hover,
+.btn-round:focus,
+.btn-round:active {
+  background: var(--bg-color-1);
+}
+
+.btn-round:active {
+  transform: translate3d(0, 3px, 0);
+}
+
+.btn-round svg {
+  fill: var(--btn-color-fill);
+}
+
+
+@media (max-width: 840px) {
+  section {
+    height: 100%;
+  }
+  #app {
+    grid-auto-flow: row;
+    grid-template-columns: unset;
+    grid-template-rows: [player] 0.5fr [clips] 1fr;
+  }
+}

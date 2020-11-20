@@ -1,0 +1,9 @@
+tmp
+tmp/
+tmp/*
+
+.DS_Store
+
+/bin
+
+web-ui/config.json
