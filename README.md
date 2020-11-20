@@ -19,7 +19,7 @@ This demo uses [AWS Cloud Development Kit](https://aws.amazon.com/cdk/) (AWS CDK
 `npm install`
 
 2. then run:
-`make boostrap`
+`make bootstrap`
 
 3. and finally:
 `make deploy`
