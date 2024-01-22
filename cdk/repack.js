@@ -1,11 +1,21 @@
-const jsonfile = require('jsonfile')
-const file = 'tempvars.json'
+const { readFileSync } = require('fs');
 
-let tempvars = jsonfile.readFileSync(file)
+const tempvars = readFileSync('tempvars.json');
 
-let publicConfig = { 
-  api: tempvars.ClipsBackend.api,
-  playbackURL: tempvars.ClipsBackend.playbackUrl
+const tempvars2= (JSON.parse(tempvars));
+
+const publicConfig = { 
+  api: tempvars2.ClipsBackend.api,
+  playbackURL: tempvars2.ClipsBackend.playbackUrl
 }
 
-jsonfile.writeFileSync("../web-ui/config.json", publicConfig)
+const { writeFileSync } = require('fs');
+
+const path = '../web-ui/config.json';
+
+try {
+  writeFileSync(path, JSON.stringify(publicConfig, null, 2), 'utf8');
+  console.log('Data successfully saved to disk');
+} catch (error) {
+  console.log('An error has occurred ', error);
+}

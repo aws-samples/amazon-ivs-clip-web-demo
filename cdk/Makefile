@@ -8,10 +8,10 @@ cdksynth: buildcdk
 	npx cdk -v synth ClipsUI
 
 deploy: build
-	npx cdk -v deploy ClipsBackend --outputs-file tempvars.json
+	npx cdk deploy -v --outputs-file tempvars.json ClipsBackend
 	node repack.js
 	rm tempvars.json
-	npx cdk -v deploy ClipsUI
+	npx cdk deploy -v ClipsUI
 
 app:
 	cd ../clips && make build

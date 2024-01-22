@@ -1,8 +1,9 @@
-import * as cdk from '@aws-cdk/core';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cloudfront from '@aws-cdk/aws-cloudfront';
-import * as s3deployment from '@aws-cdk/aws-s3-deployment';
-import * as ivs from '@aws-cdk/aws-ivs';
+import * as cdk from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as s3deployment from 'aws-cdk-lib/aws-s3-deployment';
+import * as ivs from 'aws-cdk-lib/aws-ivs';
+import { Construct } from 'constructs';
 
 export interface StackProps {
     cdkProps: cdk.StackProps;
@@ -13,7 +14,7 @@ export interface StackProps {
 }
 
 export class UIStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, props: StackProps) {
+    constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props.cdkProps);
         
         // Upload the frontend to S3

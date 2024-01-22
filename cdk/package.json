@@ -11,27 +11,17 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.134.0",
-    "@types/jest": "^27.0.3",
-    "@types/node": "^16.11.11",
-    "aws-cdk": "1.134.0",
-    "jest": "^27.4.3",
-    "ts-jest": "^27.0.7",
-    "ts-node": "^10.4.0",
-    "typescript": "~4.5.2"
+    "@types/jest": "^29.5.11",
+    "@types/node": "20.10.4",
+    "aws-cdk": "2.115.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.3.3"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigatewayv2": "1.134.0",
-    "@aws-cdk/aws-apigatewayv2-integrations": "1.134.0",
-    "@aws-cdk/aws-cloudfront": "1.134.0",
-    "@aws-cdk/aws-cloudfront-origins": "1.134.0",
-    "@aws-cdk/aws-iam": "1.134.0",
-    "@aws-cdk/aws-ivs": "1.134.0",
-    "@aws-cdk/aws-lambda": "1.134.0",
-    "@aws-cdk/aws-s3": "1.134.0",
-    "@aws-cdk/aws-s3-deployment": "1.134.0",
-    "@aws-cdk/aws-sam": "1.134.0",
-    "@aws-cdk/core": "1.134.0",
+    "aws-cdk-lib": "2.115.0",
+    "constructs": "^10.0.0",
     "jsonfile": "^6.1.0",
     "source-map-support": "^0.5.21"
   }

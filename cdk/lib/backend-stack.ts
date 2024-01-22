@@ -1,12 +1,13 @@
-import * as cdk from '@aws-cdk/core';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cloudfront from '@aws-cdk/aws-cloudfront';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iam from '@aws-cdk/aws-iam';
-import * as apigateway from '@aws-cdk/aws-apigatewayv2';
-import * as apigatewayintegrations from '@aws-cdk/aws-apigatewayv2-integrations';
-import * as sam from '@aws-cdk/aws-sam';
-import * as ivs from '@aws-cdk/aws-ivs';
+import * as cdk from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as apigateway from 'aws-cdk-lib/aws-apigatewayv2';
+import * as apigatewayintegrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
+import * as sam from 'aws-cdk-lib/aws-sam';
+import * as ivs from 'aws-cdk-lib/aws-ivs';
+import { Construct } from 'constructs';
 
 export interface StackProps {
   cdkProps: cdk.StackProps;
@@ -18,7 +19,7 @@ export class BackendStack extends cdk.Stack {
   public channel: ivs.CfnChannel;
   public streamkey: ivs.CfnStreamKey;
 
-  constructor(scope: cdk.Construct, id: string, props: StackProps) {
+  constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props.cdkProps);
 
     // Lets start by creating the S3 bucket where we will store the captured clips.
@@ -87,9 +88,7 @@ export class BackendStack extends cdk.Stack {
     gw.addRoutes({
       path: '/clip',
       methods: [ apigateway.HttpMethod.GET ],
-      integration: new apigatewayintegrations.LambdaProxyIntegration({
-        handler: lambdaFunction,
-      }),
+      integration: new apigatewayintegrations.HttpLambdaIntegration('clip-lambdaintegration', lambdaFunction),
     });
 
     // Create the IVS channel
@@ -102,8 +101,9 @@ export class BackendStack extends cdk.Stack {
       channelArn: this.channel.ref,
     })
 
-    new cdk.CfnOutput(this, 'playbackUrl', { value: this.channel.attrPlaybackUrl });
-    new cdk.CfnOutput(this, 'api', { value: gw.apiEndpoint });
+    new cdk.CfnOutput(this, 'playbackUrl', { value: this.channel.attrPlaybackUrl, exportName: "play" } );
+    new cdk.CfnOutput(this, 'api', { value: gw.apiEndpoint, exportName: "api2" });
+    
 
   }
 }
